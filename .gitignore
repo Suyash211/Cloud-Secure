@@ -1,0 +1,14 @@
+node_modules
+.env
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfvars
+terraform.tfvars.json
+*.backup
+.crash
+*.log
+*.tfplan
+*.iml
+terraform.rc
+*.tf.lock.hcl
