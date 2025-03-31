@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [loading, setLoading] = useState(false);
+  const [loadingAction, setLoadingAction] = useState(null);
   const [error, setError] = useState(null);
 
   const handleTerraformAction = async (action) => {
-    setLoading(true);
+    setLoadingAction(action);
     setError(null);
 
     try {
@@ -32,39 +32,33 @@ function App() {
       setError(error.message);
       alert("Error executing Terraform command: " + error.message);
     } finally {
-      setLoading(false);
+      setLoadingAction(null);
     }
   };
+
+  const buttons = [
+    { action: "buckets", label: "Manage S3 Buckets" },
+    { action: "ecs", label: "Manage ECS Cluster" },
+    { action: "eks", label: "Manage EKS Cluster" },
+    { action: "instances", label: "Manage EC2 Instances" },
+    { action: "users", label: "Manage IAM Users" },
+  ];
 
   return (
     <div className="App">
       <h1>Terraform Infrastructure Manager</h1>
       {error && <div className="error-message">{error}</div>}
       <div className="button-container">
-        <button
-          onClick={() => handleTerraformAction("buckets")}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Manage S3 Buckets"}
-        </button>
-        <button onClick={() => handleTerraformAction("ecs")} disabled={loading}>
-          {loading ? "Processing..." : "Manage ECS Cluster"}
-        </button>
-        <button onClick={() => handleTerraformAction("eks")} disabled={loading}>
-          {loading ? "Processing..." : "Manage EKS Cluster"}
-        </button>
-        <button
-          onClick={() => handleTerraformAction("instances")}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Manage EC2 Instances"}
-        </button>
-        <button
-          onClick={() => handleTerraformAction("users")}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Manage IAM Users"}
-        </button>
+        {buttons.map(({ action, label }) => (
+          <button
+            key={action}
+            onClick={() => handleTerraformAction(action)}
+            disabled={loadingAction !== null}
+            className={loadingAction === action ? "loading" : ""}
+          >
+            {loadingAction === action ? `Processing ${label}...` : label}
+          </button>
+        ))}
       </div>
     </div>
   );
