@@ -40,21 +40,29 @@ resource "aws_instance" "secure_instances" {
 
 # Security group for instances
 resource "aws_security_group" "instance_security" {
-  name        = "instance-security-group"
+  name_prefix = "instance-security-"
   description = "Security group for EC2 instances"
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow HTTPS traffic from anywhere
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] # Allow all outbound traffic
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = {
+    Name = "instance-security-group"
   }
 }
 
